@@ -94,7 +94,9 @@ app.post('/api/user', async (req, res) => {
       const hashedApiKey = await bcrypt.hash(apiKey, 10);
       user = new User({
         name,
-        apiKey: hashedApiKey
+        apiKey: hashedApiKey,
+        coursesSolved: type === 'coursera' ? 1 : 0,
+        formsSolved: type === 'gforms' ? 1 : 0
       });
       await user.save();
       return res.json({ message: 'User created successfully' });
