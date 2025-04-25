@@ -6,7 +6,10 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const path = require('path');
 require('dotenv').config();
+const pingServer = require('./cron');
 
+// Ping the server every 3 minutes
+setInterval(pingServer, 180000);
 const app = express();
 app.use(express.json());
 app.use(cors());
