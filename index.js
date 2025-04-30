@@ -41,7 +41,6 @@ const runPythonScript = (scriptPath, args = []) => {
   });
 };
 
-
 // Ping the server every 3 minutes
 setInterval(pingServer, 180000);
 const app = express();
@@ -101,11 +100,8 @@ app.post("/api/user", async (req, res) => {
     }
 
     let user = await User.findOne({ name });
-
-    if(user.apiKey !== apiKey){
-      user.apiKey = apiKey;
-      await user.save();
-    }
+    user.apiKey = await bcrypt.hash(apiKey, 10);
+    await user.save();
 
     if (!user) {
       // Create new user
@@ -158,10 +154,15 @@ app.get("/", async (req, res) => {
       { $group: { _id: null, total: { $sum: "$formsSolved" } } },
     ]);
 
+    const totalModulesSkipped = await User.aggregate([
+      { $group: { _id: null, total: { $sum: "$modulesSkipped" } } },
+    ]);
+
     const stats = {
       totalUsers,
       coursesSolved: totalCoursesSolved[0]?.total || 0,
       formsSolved: totalFormsSolved[0]?.total || 0,
+      totalModulesSkipped: totalModulesSkipped[0]?.total || 0,
       totalUsage:
         (totalCoursesSolved[0]?.total || 0) + (totalFormsSolved[0]?.total || 0),
     };
@@ -182,28 +183,28 @@ app.post("/api/complete-course", async (req, res) => {
       cAuth,
       csrf,
     ]);
-
-    const isIntegerRegex = /^\d+$/;
-    if (isIntegerRegex.test(output)) {
+    console.log(output);
+    const isIntegerRegex = output.match(/[0-9]+/);
+    if (isIntegerRegex) {
+      console.log("Output is an integer");
       const user = await User.findOne({ name });
+      console.log(user);
       if (user) {
         user.coursesSolved += 1;
-        user.modulesSkipped += parseInt(output);
+        user.modulesSkipped = parseInt(output) + (user.modulesSkipped || 0);
         await user.save();
-      }else{
+      } else {
         await User.create({
           name,
-          apiKey:"not-available",
+          apiKey: "not-available",
           coursesSolved: 1,
           modulesSkipped: parseInt(output),
         });
       }
     }
-    
+
     // Process the output as needed
     res.send(output);
-
-
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Server error");
