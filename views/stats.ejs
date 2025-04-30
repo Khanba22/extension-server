@@ -131,7 +131,7 @@
         min-height: 100vh;
         display: flex;
         align-items: center;
-        background: url("/api/placeholder/1200/600") center/cover;
+        background: url("/banner.png") center/cover;
         background-attachment: fixed;
         position: relative;
         margin-top: 0;
@@ -149,11 +149,13 @@
       }
 
       .hero-content {
+        filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.2));
+        border-radius: 30px;
         position: relative;
         z-index: 1;
         color: var(--white);
         text-align: center;
-        padding: 3rem 1rem;
+        padding: 6rem 3rem;
       }
 
       .hero-title {
@@ -401,14 +403,16 @@
         margin-bottom: 0;
       }
 
-      .step:not(:last-child):before {
-        content: "";
-        position: absolute;
-        top: 60px;
-        left: 30px;
-        height: calc(100% + 3rem);
-        width: 2px;
-        background: var(--primary-light);
+      @media screen and (min-width: 768px) {
+        .step:not(:last-child):before {
+          content: "";
+          position: absolute;
+          top: 60px;
+          left: 30px;
+          height: calc(100% + 3rem);
+          width: 2px;
+          background: var(--primary-light);
+        }
       }
 
       .step-number {
@@ -588,12 +592,15 @@
 
       .contact-info {
         display: flex;
+        align-items: center;
         flex-direction: column;
         gap: 1.5rem;
       }
 
       .contact-item {
+        width: 100%;
         display: flex;
+        
         align-items: center;
         gap: 1rem;
       }
@@ -923,8 +930,8 @@
     <nav class="navbar">
       <div class="nav-container">
         <div class="logo">
-          <i class="fas fa-chart-line"></i>
-          <span>Extension Stats</span>
+          <i class="fas fa-book"></i>
+          <span>AI Study Buddy</span>
         </div>
         <div class="nav-links" id="navLinks">
           <a href="#home">Home</a>
@@ -945,7 +952,7 @@
     <section class="hero" id="home">
       <div class="container">
         <div class="hero-content">
-          <h1 class="hero-title">Extension Statistics Dashboard</h1>
+          <h1 class="hero-title">AI Study Buddy</h1>
           <p class="hero-subtitle">
             Track usage of our browser extensions designed to enhance your
             learning experience on Coursera and Google Forms.
@@ -1117,7 +1124,7 @@
       </div>
     </section>
 
-    <!-- Chart Section -->
+    <!-- Chart Section
     <section class="section chart-section">
       <div class="container">
         <div class="section-header">
@@ -1133,7 +1140,7 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- How to Use Section -->
     <section class="section how-to-use" id="how-to-use">
@@ -1260,7 +1267,8 @@
             <h3 class="member-name">Mushan Khan</h3>
             <p class="member-role">Full Stack Developer</p>
             <p class="member-bio">
-              Creator of the Coursera and Google Forms extension, responsible for the automation and data processing of the extensions.
+              Creator of the Coursera and Google Forms extension, responsible
+              for the automation and data processing of the extensions.
             </p>
             <div class="social-links">
               <a
@@ -1270,10 +1278,18 @@
               >
                 <i class="fab fa-github"></i>
               </a>
-              <a href="https://www.linkedin.com/in/mushankhan/" target="_blank" class="social-link">
+              <a
+                href="https://www.linkedin.com/in/mushankhan/"
+                target="_blank"
+                class="social-link"
+              >
                 <i class="fab fa-linkedin"></i>
               </a>
-              <a href="https://x.com/Mushan27Khan" target="_blank" class="social-link">
+              <a
+                href="https://x.com/Mushan27Khan"
+                target="_blank"
+                class="social-link"
+              >
                 <i class="fab fa-twitter"></i>
               </a>
             </div>
@@ -1321,7 +1337,8 @@
             <h3 class="member-name">Tushar Pamnani</h3>
             <p class="member-role">Full Stack Developer</p>
             <p class="member-bio">
-              Handled the frontend development of the integrated webpage along with documentation and testing.
+              Handled the frontend development of the integrated webpage along
+              with documentation and testing.
             </p>
             <div class="social-links">
               <a
@@ -1339,8 +1356,6 @@
               </a>
             </div>
           </div>
-
-         
         </div>
       </div>
     </section>
@@ -1435,24 +1450,6 @@
           <div class="contact-info animate-fade-in-up delay-100">
             <div class="contact-item">
               <div class="contact-icon">
-                <i class="fas fa-map-marker-alt"></i>
-              </div>
-              <div>
-                <h3>Location</h3>
-                <p>Ramdeobaba University, Nagpur - 440013</p>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-icon">
-                <i class="fas fa-envelope"></i>
-              </div>
-              <div>
-                <h3>Email</h3>
-                <p>0xtushar.pamnani@gmail.com</p>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-icon">
                 <i class="fas fa-phone-alt"></i>
               </div>
               <div>
@@ -1470,52 +1467,28 @@
               </div>
             </div>
           </div>
-          <div class="contact-form animate-fade-in-up delay-200">
-            <form id="contactForm">
-              <div class="form-group">
-                <label for="name">Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  class="form-control"
-                  placeholder="Your Name"
-                  required
-                />
+          <div class="contact-info animate-fade-in-up delay-100">
+            <div class="contact-item">
+              <div class="contact-icon">
+                <i class="fas fa-map-marker-alt"></i>
               </div>
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  class="form-control"
-                  placeholder="Your Email"
-                  required
-                />
+              <div>
+                <h3>Location</h3>
+                <p>Ramdeobaba University, Nagpur - 440013</p>
               </div>
-              <div class="form-group">
-                <label for="subject">Subject</label>
-                <input
-                  type="text"
-                  id="subject"
-                  class="form-control"
-                  placeholder="Subject"
-                  required
-                />
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">
+                <i class="fas fa-envelope"></i>
               </div>
-              <div class="form-group">
-                <label for="message">Message</label>
-                <textarea
-                  id="message"
-                  class="form-control"
-                  placeholder="Your Message"
-                  required
-                ></textarea>
+              <div>
+                <h3>Email</h3>
+                <p>mushankhan27@gmail.com</p>
               </div>
-              <button type="submit" class="btn-submit">
-                <i class="fas fa-paper-plane"></i> Send Message
-              </button>
-            </form>
+            </div>
+            
           </div>
+          
         </div>
       </div>
     </section>
@@ -1670,88 +1643,6 @@
       // Run on scroll
       window.addEventListener("scroll", animateOnScroll);
 
-      // Chart
-      // Safely get the stats values
-      //   var coursesSolved = <%= stats.coursesSolved || 0 %>;
-      //   var formsSolved = <%= stats.formsSolved || 0 %>;
-      //   const totalSolved = coursesSolved + formsSolved;
-
-      // If there's no data, show a message instead of an empty chart
-      if (totalSolved === 0) {
-        document.getElementById("usageChart").style.display = "none";
-        const noDataMsg = document.createElement("div");
-        noDataMsg.textContent = "No usage data available yet";
-        noDataMsg.className = "no-data-message";
-        document.getElementById("chart-wrapper").appendChild(noDataMsg);
-      } else {
-        // Initialize chart
-        const ctx = document.getElementById("usageChart").getContext("2d");
-        const chart = new Chart(ctx, {
-          type: "doughnut",
-          data: {
-            labels: ["Courses Solved", "Forms Solved"],
-            datasets: [
-              {
-                data: [coursesSolved, formsSolved],
-                backgroundColor: ["#2563eb", "#3b82f6"],
-                borderColor: ["#ffffff", "#ffffff"],
-                borderWidth: 2,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: "bottom",
-                labels: {
-                  font: {
-                    family: "Inter",
-                    size: 14,
-                  },
-                },
-              },
-              tooltip: {
-                callbacks: {
-                  label: function (context) {
-                    const label = context.label || "";
-                    const value = context.raw || 0;
-                    const total = context.dataset.data.reduce(
-                      (acc, data) => acc + data,
-                      0
-                    );
-                    let percentage = 0;
-                    if (total > 0) {
-                      percentage = Math.round((value / total) * 100);
-                    }
-                    return `${label}: ${value} (${percentage}%)`;
-                  },
-                },
-              },
-            },
-            animation: {
-              animateScale: true,
-              animateRotate: true,
-              duration: 2000,
-              easing: "easeInOutQuart",
-            },
-          },
-        });
-      }
-
-      // Form submission handler (placeholder)
-      const contactForm = document.getElementById("contactForm");
-
-      contactForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        // Add your form submission logic here
-        // For demonstration purposes:
-        alert("Thank you for your message! We will get back to you soon.");
-        contactForm.reset();
-      });
-
       // Simulate loading of statistics with countUp animation
       const statValues = document.querySelectorAll(".stat-value");
 
@@ -1773,6 +1664,44 @@
             statValue.textContent = Math.floor(currentValue);
           }
         }, interval);
+      });
+
+      document
+        .getElementById("contactForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const name = document.getElementById("name").value;
+          const email = document.getElementById("email").value;
+          const subject = document.getElementById("subject").value;
+          const message = document.getElementById("message").value;
+
+          // Email configuration
+          const mailtoLink = `mailto:mushankhan27@gmail.com?subject=${encodeURIComponent(
+            subject
+          )}&body=${encodeURIComponent(
+            `Name: ${name}
+Email: ${email}
+Message: ${message}`
+          )}`;
+
+          // Open default email client
+          window.location.href = mailtoLink;
+
+          // Reset form
+          document.getElementById("contactForm").reset();
+
+          // Show success message
+          alert("Email client opened! Please send your message.");
+        });
+
+      // Add loading state to submit button
+      const submitBtn = document.getElementById("send-message");
+      submitBtn.addEventListener("click", function () {
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        setTimeout(() => {
+          this.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+        }, 2000);
       });
     </script>
   </body>
