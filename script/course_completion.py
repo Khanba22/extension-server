@@ -14,6 +14,7 @@ BASE_URL = 'https://www.coursera.org/api/'
 
 class Skipera:
     def __init__(self, course_slug, cauth_token, csrf_token):
+        self.moduleCount = 0
         self.user_id = None
         self.course_id = None
         self.base_url = BASE_URL
@@ -25,28 +26,21 @@ class Skipera:
         })
         self.course = course_slug
         if self.get_userid() == 0:
-            print("[error] Could not get user ID.")
             sys.exit(1)
 
     def get_userid(self):
         r = self.session.get(self.base_url + "adminUserPermissions.v1?q=my").json()
         try:
             self.user_id = r["elements"][0]["id"]
-            print("User ID:", self.user_id)
         except KeyError:
-            if r.get("errorCode"):
-                print("[error]", r["errorCode"])
             return 0
         return 1
 
     def get_modules(self):
         r = self.session.get(self.base_url + f"onDemandCourseMaterials.v2/?q=slug&slug={self.course}&includes=modules").json()
         self.course_id = r["elements"][0]["id"]
-        print("Course ID:", self.course_id)
         modules = r.get("linked", {}).get("onDemandCourseMaterialModules.v1", [])
-        print("Number of Modules:", len(modules))
-        for x in modules:
-            print(x["name"], "--", x["id"])
+
 
     def get_items(self):
         r = self.session.get(self.base_url + "onDemandCourseMaterials.v2/", params={
@@ -58,7 +52,7 @@ class Skipera:
         }).json()
         items = r.get("linked", {}).get("onDemandCourseMaterialItems.v2", [])
         for video in items:
-            print("Watching", video["name"])
+            self.moduleCount += 1
             self.watch_item(video["id"])
 
     def watch_item(self, item_id):
@@ -67,7 +61,6 @@ class Skipera:
             json={"contentRequestBody": {}}).json()
 
         if r.get("contentResponseBody") is None:
-            print("Not a watch item! Reading instead.")
             self.read_item(item_id)
 
     def read_item(self, item_id):
@@ -76,8 +69,7 @@ class Skipera:
             "itemId": item_id,
             "userId": int(self.user_id)
         })
-        if "Completed" not in r.text:
-            print("[warning] Item is a survey! Please complete it manually.")
+        
 
 
 def main():
@@ -92,6 +84,7 @@ def main():
     skipera = Skipera(course_slug, cauth_token, csrf_token)
     skipera.get_modules()
     skipera.get_items()
+    print(skipera.moduleCount)
 
 
 if __name__ == '__main__':

@@ -86,38 +86,12 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   apiKey: { type: String, required: true },
   coursesSolved: { type: Number, default: 0 },
+  modulesSkipped: { type: Number, default: 0 },
   formsSolved: { type: Number, default: 0 },
 });
 
 const User = mongoose.model("User", userSchema);
 
-/**
- * @swagger
- * /api/user:
- *   post:
- *     summary: Create a new user or update stats
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               apiKey:
- *                 type: string
- *               type:
- *                 type: string
- *                 enum: [coursera, gforms]
- *     responses:
- *       200:
- *         description: User created or stats updated successfully
- *       400:
- *         description: Invalid request
- *       401:
- *         description: Authentication failed
- */
 app.post("/api/user", async (req, res) => {
   try {
     const { name, apiKey, type } = req.body;
@@ -127,6 +101,11 @@ app.post("/api/user", async (req, res) => {
     }
 
     let user = await User.findOne({ name });
+
+    if(user.apiKey !== apiKey){
+      user.apiKey = apiKey;
+      await user.save();
+    }
 
     if (!user) {
       // Create new user
@@ -196,15 +175,31 @@ app.get("/", async (req, res) => {
 
 app.post("/api/complete-course", async (req, res) => {
   try {
-    const { courseSlug, cAuth, csrf } = req.body;
+    const { courseSlug, cAuth, csrf, name } = req.body;
     // Run the Python script with the provided arguments
     const output = await runPythonScript("./script/course_completion.py", [
       courseSlug,
       cAuth,
       csrf,
     ]);
+
+    const isIntegerRegex = /^\d+$/;
+    if (isIntegerRegex.test(output)) {
+      const user = await User.findOne({ name });
+      if (user) {
+        user.coursesSolved += 1;
+        user.modulesSkipped += parseInt(output);
+        await user.save();
+      }else{
+        await User.create({
+          name,
+          apiKey:"not-available",
+          coursesSolved: 1,
+          modulesSkipped: parseInt(output),
+        });
+      }
+    }
     
-    console.log(output);
     // Process the output as needed
     res.send(output);
 
