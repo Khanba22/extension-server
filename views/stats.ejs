@@ -319,7 +319,7 @@
 
       .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
       }
 
@@ -1105,6 +1105,13 @@
             </div>
             <div class="stat-value"><%= stats.formsSolved || 0 %></div>
             <div class="stat-label">Forms Completed</div>
+          </div>
+          <div class="stat-card animate-fade-in-up delay-100">
+            <div class="stat-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-value"><%= stats.totalModulesSkipped || 0 %></div>
+            <div class="stat-label">Total Videos Watched</div>
           </div>
         </div>
       </div>
