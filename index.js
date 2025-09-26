@@ -180,34 +180,24 @@ app.get("/", async (req, res) => {
 app.post("/api/complete-course", async (req, res) => {
   try {
     const { courseSlug, cAuth, csrf, name } = req.body;
-    // Run the Python script with the provided arguments
-    const output = await runPythonScript("./script/course_completion.py", [
-      courseSlug,
-      cAuth,
-      csrf,
-    ]);
-    console.log(output);
-    const isIntegerRegex = output.match(/[0-9]+/);
-    if (isIntegerRegex) {
-      console.log("Output is an integer");
-      const user = await User.findOne({ name });
-      console.log(user);
-      if (user) {
-        user.coursesSolved += 1;
-        user.modulesSkipped = parseInt(output) + (user.modulesSkipped || 0);
-        await user.save();
-      } else {
-        await User.create({
-          name,
-          apiKey: "not-available",
-          coursesSolved: 1,
-          modulesSkipped: parseInt(output),
-        });
-      }
+    const { runCourseCompletion } = require("./lib/courseCompletion");
+    const modules = await runCourseCompletion(courseSlug, cAuth, csrf);
+
+    const user = await User.findOne({ name });
+    if (user) {
+      user.coursesSolved += 1;
+      user.modulesSkipped = modules + (user.modulesSkipped || 0);
+      await user.save();
+    } else {
+      await User.create({
+        name,
+        apiKey: "not-available",
+        coursesSolved: 1,
+        modulesSkipped: modules,
+      });
     }
 
-    // Process the output as needed
-    res.send(output);
+    res.send(String(modules));
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Server error");
