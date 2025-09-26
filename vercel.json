@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "functions": {
+    "api/*.js": { "runtime": "nodejs20.x" },
+    "api/*.py": { "runtime": "python3.11" }
+  },
+  "builds": [
+    { "src": "api/*.js", "use": "@vercel/node" },
+    { "src": "api/*.py", "use": "@vercel/python" }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/api/index" },
+    { "source": "/api/complete-course", "destination": "/api/course_completion" }
+  ]
+}
+

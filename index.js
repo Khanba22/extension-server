@@ -9,10 +9,11 @@ require("dotenv").config();
 const pingServer = require("./cron");
 const { spawn } = require("child_process");
 
-// Function to execute Python script
+// Function to execute Python script (local dev/Node hosting only)
 const runPythonScript = (scriptPath, args = []) => {
   return new Promise((resolve, reject) => {
-    const pythonProcess = spawn("python", [scriptPath, ...args]);
+    const pythonBinary = process.env.PYTHON_BINARY || "python";
+    const pythonProcess = spawn(pythonBinary, [scriptPath, ...args]);
 
     let output = "";
     let error = "";
@@ -41,8 +42,10 @@ const runPythonScript = (scriptPath, args = []) => {
   });
 };
 
-// Ping the server every 3 minutes
-setInterval(pingServer, 180000);
+// Ping the server every 3 minutes (avoid in Vercel)
+if (!process.env.VERCEL) {
+  setInterval(pingServer, 180000);
+}
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -211,7 +214,7 @@ app.post("/api/complete-course", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
   console.log(
