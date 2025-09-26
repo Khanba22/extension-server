@@ -38,7 +38,8 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    const resp = await fetch(`/api/course_completion`, {
+    const url = `https://${req.headers.host}/api/course_completion`;
+    const resp = await fetch(url, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ courseSlug, cAuth, csrf })
