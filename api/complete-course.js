@@ -38,8 +38,7 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    const url = `${process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''}/api/course_completion`;
-    const resp = await fetch(url, {
+    const resp = await fetch(`/api/course_completion`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ courseSlug, cAuth, csrf })
