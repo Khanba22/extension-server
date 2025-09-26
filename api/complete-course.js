@@ -38,15 +38,35 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    const url = `https://${req.headers.host}/api/course_completion`;
-    const resp = await fetch(url, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ courseSlug, cAuth, csrf })
-    });
-    const data = await resp.json();
+    // On Vercel, we cannot spawn Python. Return error instructive.
+    const isVercel = !!process.env.VERCEL;
+    if (isVercel) {
+      res.status(501).json({ error: "Python side-process is not supported on Vercel. Host Node server or create an external worker." });
+      return;
+    }
 
-    if (resp.ok && typeof data.modulesSkipped === "number") {
+    // Local/Node hosting: spawn python side process and parse output
+    const { spawn } = require("child_process");
+    const pythonBinary = process.env.PYTHON_BINARY || "python";
+    const scriptPath = require("path").join(process.cwd(), "script", "course_completion.py");
+
+    const output = await new Promise((resolve, reject) => {
+      const p = spawn(pythonBinary, [scriptPath, courseSlug, cAuth, csrf]);
+      let out = "";
+      let err = "";
+      p.stdout.on("data", (d) => (out += d.toString()));
+      p.stderr.on("data", (d) => (err += d.toString()));
+      p.on("close", (code) => {
+        if (code !== 0) reject(new Error(err || `Python exited ${code}`));
+        else resolve(out);
+      });
+      p.on("error", (e) => reject(e));
+    });
+
+    const match = String(output).match(/[0-9]+/);
+    const data = match ? { modulesSkipped: parseInt(match[0], 10) } : { output: String(output) };
+
+    if (typeof data.modulesSkipped === "number") {
       const user = await User.findOne({ name });
       if (user) {
         user.coursesSolved += 1;
@@ -62,7 +82,7 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    res.status(resp.status).json(data);
+    res.status(200).json(data);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });

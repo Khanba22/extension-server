@@ -1,12 +1,7 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "api/**/*.js", "use": "@vercel/node@3.0.29" },
-    { "src": "api/**/*.py", "use": "@vercel/python@3.2.0" }
-  ],
   "rewrites": [
-    { "source": "/", "destination": "/api/index" },
-    { "source": "/api/complete-course", "destination": "/api/course_completion" }
+    { "source": "/", "destination": "/api/index" }
   ]
 }
 
